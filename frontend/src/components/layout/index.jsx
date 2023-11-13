@@ -1,57 +1,47 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { Dialog, Menu, Transition } from "@headlessui/react";
-// import {
-//   BellIcon,
-//   CalendarIcon,
-//   ChartBarIcon,
-//   FolderIcon,
-//   HomeIcon,
-//   InboxIcon,
-//   MenuAlt2Icon,
-//   UsersIcon,
-//   XIcon,
-// } from "@heroicons/react/outline";
-// import { SearchIcon } from "@heroicons/react/solid";
 
 import {
   Bars3Icon,
   BellIcon,
-  HomeIcon,
   MagnifyingGlassIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 
-const navigation = [
-  { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
-  //   { name: "Team", href: "#", icon: UsersIcon, current: false },
-  //   { name: "Projects", href: "#", icon: FolderIcon, current: false },
-  //   { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
-  //   { name: "Documents", href: "#", icon: InboxIcon, current: false },
-  //   { name: "Reports", href: "#", icon: ChartBarIcon, current: false },
-];
+import { navigation } from "../../constants/navigation";
+import logo from "../../assets/logo/logo.png";
+
 const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
+  { name: "Your Profile", to: "/" },
+  { name: "Settings", to: "/" },
+  { name: "Sign out", to: "/" },
 ];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Example() {
+export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const [navLinks, setNavLinks] = useState(navigation);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    const updatedLinks = navigation.map((link) => {
+      if (link.to === location.pathname) {
+        return { ...link, current: true };
+      } else {
+        return { ...link, current: false };
+      }
+    });
+    setNavLinks(updatedLinks);
+  }, [location]);
 
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-gray-100">
-        <body class="h-full">
-        ```
-      */}
       <div>
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
@@ -79,7 +69,7 @@ export default function Example() {
               leaveFrom="translate-x-0"
               leaveTo="-translate-x-full"
             >
-              <div className="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-indigo-700">
+              <div className="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-white">
                 <Transition.Child
                   as={Fragment}
                   enter="ease-in-out duration-300"
@@ -104,31 +94,32 @@ export default function Example() {
                   </div>
                 </Transition.Child>
                 <div className="flex-shrink-0 flex items-center px-4">
-                  <img
-                    className="h-8 w-auto"
-                    src="https://tailwindui.com/img/logos/workflow-logo-indigo-300-mark-white-text.svg"
-                    alt="Workflow"
-                  />
+                  <img className="h-20 w-auto" src={logo} alt="Workflow" />
                 </div>
                 <div className="mt-5 flex-1 h-0 overflow-y-auto">
                   <nav className="px-2 space-y-1">
-                    {navigation.map((item) => (
-                      <a
+                    {navLinks.map((item) => (
+                      <Link
                         key={item.name}
-                        href={item.href}
+                        to={item.to}
                         className={classNames(
                           item.current
-                            ? "bg-indigo-800 text-white"
-                            : "text-indigo-100 hover:bg-indigo-600",
+                            ? "bg-gray-100 text-gray-900"
+                            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                           "group flex items-center px-2 py-2 text-base font-medium rounded-md"
                         )}
                       >
                         <item.icon
-                          className="mr-4 flex-shrink-0 h-6 w-6 text-indigo-300"
+                          className={classNames(
+                            item.current
+                              ? "text-gray-500"
+                              : "text-gray-400 group-hover:text-gray-500",
+                            "mr-4 flex-shrink-0 h-6 w-6"
+                          )}
                           aria-hidden="true"
                         />
                         {item.name}
-                      </a>
+                      </Link>
                     ))}
                   </nav>
                 </div>
@@ -143,33 +134,34 @@ export default function Example() {
         {/* Static sidebar for desktop */}
         <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex flex-col flex-grow pt-5 bg-indigo-700 overflow-y-auto">
+          <div className="flex flex-col flex-grow border-r border-gray-200 pt-5 bg-white overflow-y-auto">
             <div className="flex items-center flex-shrink-0 px-4">
-              <img
-                className="h-8 w-auto"
-                src="https://tailwindui.com/img/logos/workflow-logo-indigo-300-mark-white-text.svg"
-                alt="Workflow"
-              />
+              <img className="h-20 w-auto" src={logo} alt="Workflow" />
             </div>
-            <div className="mt-5 flex-1 flex flex-col">
+            <div className="mt-5 flex-grow flex flex-col">
               <nav className="flex-1 px-2 pb-4 space-y-1">
-                {navigation.map((item) => (
-                  <a
+                {navLinks.map((item) => (
+                  <Link
                     key={item.name}
-                    href={item.href}
+                    to={item.to}
                     className={classNames(
                       item.current
-                        ? "bg-indigo-800 text-white"
-                        : "text-indigo-100 hover:bg-indigo-600",
+                        ? "bg-gray-100 text-gray-900"
+                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                       "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
                     )}
                   >
                     <item.icon
-                      className="mr-3 flex-shrink-0 h-6 w-6 text-indigo-300"
+                      className={classNames(
+                        item.current
+                          ? "text-gray-500"
+                          : "text-gray-400 group-hover:text-gray-500",
+                        "mr-3 flex-shrink-0 h-6 w-6"
+                      )}
                       aria-hidden="true"
                     />
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
               </nav>
             </div>
@@ -242,15 +234,15 @@ export default function Example() {
                       {userNavigation.map((item) => (
                         <Menu.Item key={item.name}>
                           {({ active }) => (
-                            <a
-                              href={item.href}
+                            <Link
+                              to={item.to}
                               className={classNames(
                                 active ? "bg-gray-100" : "",
                                 "block px-4 py-2 text-sm text-gray-700"
                               )}
                             >
                               {item.name}
-                            </a>
+                            </Link>
                           )}
                         </Menu.Item>
                       ))}
@@ -260,19 +252,10 @@ export default function Example() {
               </div>
             </div>
           </div>
-
-          <main>
+          <main className="flex-1">
             <div className="py-6">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-                <h1 className="text-2xl font-semibold text-gray-900">
-                  Dashboard
-                </h1>
-              </div>
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-                {/* Replace with your content */}
-                <div className="py-4">
-                  <div className="border-4 border-dashed border-gray-200 rounded-lg h-96" />
-                </div>
+                <Outlet />
                 {/* /End replace */}
               </div>
             </div>
