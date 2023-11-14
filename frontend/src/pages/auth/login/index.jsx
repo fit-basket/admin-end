@@ -1,8 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../../assets/logo/logo.png";
 import { useState } from "react";
-// import axios from "../../../utils/axiosConfig";
-import axios from "axios";
+import axios from "../../../utils/axiosConfig";
 import { ButtonLoader } from "../../../components/loader";
 import {
   signInStart,
@@ -35,9 +34,7 @@ function Login() {
     e.preventDefault();
     dispatch(signInStart());
     axios
-      .post("https://the-purple-mango.onrender.com/api/auth/signin", {
-        ...user,
-      })
+      .post("/auth/signin", { ...user })
       .then((res) => {
         if (res.data.success) {
           dispatch(signInSuccess(res.data));
