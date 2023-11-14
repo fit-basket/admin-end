@@ -22,7 +22,7 @@ function App() {
     if (token) {
       dispatch(signInSuccess({ data, token }));
     }
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="App">

@@ -28,7 +28,7 @@ function ProductCard({ products }) {
               />
               <div className="flex-1 px-4 py-2 text-sm truncate">
                 <a
-                  //   href={product.href}
+                  href={product.href}
                   className="text-gray-900 font-medium hover:text-gray-600"
                 >
                   {product.name}
