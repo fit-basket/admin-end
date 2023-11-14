@@ -1,5 +1,8 @@
 // import BreadCrumb from "../../components/breadcrumb";
 
+import { PageHeading } from "../../components/headings";
+import Category from "./Category";
+
 // const crumbs = [
 //   { name: "Burger", href: "#", current: false },
 //   { name: "Project Nero", href: "#", current: true },
@@ -8,14 +11,12 @@
 export default function Product() {
   return (
     <div>
-      <div className="mt-2 md:flex md:items-center md:justify-between">
+      <div className="mt-2 flex items-center justify-between">
         <div className="flex-1 min-w-0">
-          <h2 className="text-base font-bold leading-7 text-start sm:text-base sm:truncate">
-            Products
-          </h2>
+          <PageHeading title="Products" />
         </div>
         {/* <BreadCrumb title="Products" crumbs={crumbs} /> */}
-        <div className="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
+        <div className="flex-shrink-0 flex ">
           {/* <button
             type="button"
             className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500"
@@ -30,6 +31,7 @@ export default function Product() {
           </button>
         </div>
       </div>
+      <Category />
     </div>
   );
 }

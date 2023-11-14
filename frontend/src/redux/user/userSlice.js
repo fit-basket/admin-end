@@ -6,14 +6,15 @@ const initialState = {
   error: false,
 };
 
-// const getToken = () => {
-//   const authToken = document.cookie
-//     //   console.log("AUTHHHH", authToken);
-//     .split("; ")
-//     .find((row) => row.startsWith("access_token="))
-//     .split("=")[1];
-//   localStorage.setItem("authToken", authToken);
-// };
+const handleLogin = ({ data, token }) => {
+  localStorage.setItem("authToken", token);
+  localStorage.setItem("user", JSON.stringify(data));
+};
+
+const handleLogout = () => {
+  localStorage.removeItem("authToken");
+  localStorage.removeItem("user");
+};
 
 export const counterSlice = createSlice({
   name: "user",
@@ -23,16 +24,17 @@ export const counterSlice = createSlice({
       state.loading = true;
     },
     signInSuccess: (state, action) => {
-      state.currentUser = action.payload;
+      state.currentUser = action.payload.data;
       state.loading = false;
       state.error = false;
-      //   getToken();
+      handleLogin(action.payload);
     },
     signInFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
     signOut: (state, action) => {
+      handleLogout();
       state.currentUser = null;
       state.loading = false;
       state.error = false;

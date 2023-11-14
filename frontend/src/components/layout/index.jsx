@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Dialog, Menu, Transition } from "@headlessui/react";
+import axios from "../../utils/axiosConfig";
 
 import {
   Bars3Icon,
@@ -11,11 +12,15 @@ import {
 
 import { navigation } from "../../constants/navigation";
 import logo from "../../assets/logo/logo.png";
+import { useDispatch } from "react-redux";
+import { signOut } from "../../redux/user/userSlice";
+import { ConfirmationModal } from "../modal";
+import { modalText } from "../../constants/modalText";
 
 const userNavigation = [
   { name: "Your Profile", to: "/" },
   { name: "Settings", to: "/" },
-  { name: "Sign out", to: "/" },
+  // { name: "Sign out", to: "/" },
 ];
 
 function classNames(...classes) {
@@ -23,11 +28,36 @@ function classNames(...classes) {
 }
 
 export default function Layout() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { logOutText } = modalText;
+
+  const [open, setOpen] = useState(false);
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [navLinks, setNavLinks] = useState(navigation);
 
-  const location = useLocation();
+  const handleOpen = () => setOpen(true);
+
+  // Sign out function
+  const handleSignout = (e) => {
+    e.preventDefault();
+    axios
+      .get("/auth/signout")
+      .then((res) => {
+        if (res.data.success) {
+          dispatch(signOut());
+          navigate("/login");
+        }
+        setOpen(false);
+      })
+      .catch((error) => {
+        console.log("Error: ", error);
+      });
+  };
 
   useEffect(() => {
     const updatedLinks = navigation.map((link) => {
@@ -238,7 +268,7 @@ export default function Layout() {
                               to={item.to}
                               className={classNames(
                                 active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
+                                "block px-4 py-2 text-sm text-start text-gray-700"
                               )}
                             >
                               {item.name}
@@ -246,13 +276,19 @@ export default function Layout() {
                           )}
                         </Menu.Item>
                       ))}
+                      <div
+                        onClick={handleOpen}
+                        className="px-4 py-2 cursor-pointer hover:bg-gray-100 text-sm text-start text-gray-700"
+                      >
+                        Sign Out
+                      </div>
                     </Menu.Items>
                   </Transition>
                 </Menu>
               </div>
             </div>
           </div>
-          <main className="flex-1">
+          <main className="flex-1 bg-gray-50">
             <div className="py-6">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                 <Outlet />
@@ -262,6 +298,13 @@ export default function Layout() {
           </main>
         </div>
       </div>
+      <ConfirmationModal
+        setOpen={setOpen}
+        open={open}
+        confirm={handleSignout}
+        title={logOutText.title}
+        message={logOutText.message}
+      />
     </>
   );
 }

@@ -10,8 +10,20 @@ import Reviews from "./pages/reviews";
 import Error from "./pages/error";
 
 import "./App.css";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { signInSuccess } from "./redux/user/userSlice";
 
 function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    let token = localStorage.getItem("authToken");
+    let data = JSON.parse(localStorage.getItem("user"));
+    if (token) {
+      dispatch(signInSuccess({ data, token }));
+    }
+  }, []);
+
   return (
     <div className="App">
       <Routes>
