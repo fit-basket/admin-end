@@ -20,7 +20,6 @@ function Login() {
 
   // state and variables
   const [user, setUser] = useState({
-    role: "admin",
     email: "",
     password: "",
   });
@@ -34,7 +33,7 @@ function Login() {
     e.preventDefault();
     dispatch(signInStart());
     axios
-      .post("/auth/signin", { ...user })
+      .post("/auth/admin/signin", { ...user })
       .then((res) => {
         if (res.data.success) {
           dispatch(signInSuccess(res.data));
