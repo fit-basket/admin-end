@@ -7,13 +7,18 @@ import { v4 } from "uuid";
 
 import { PageHeading } from "../../components/headings";
 import Category from "./Category";
-import ProductModal from "../../components/modal/ProductModal";
+// import ProductModal from "../../components/modal";
 import axios from "../../utils/axiosConfig";
 import {
+  addProductFailure,
+  addProductStart,
+  addProductSuccess,
   getCategoriesFailure,
   getCategoriesStart,
   getCategoriesSuccess,
+  setModalOpen,
 } from "../../redux/product/productSlice";
+import { ProductModal } from "../../components/modal";
 
 export default function Product() {
   // variables and states
@@ -38,14 +43,14 @@ export default function Product() {
   };
 
   const [open, setOpen] = useState(false);
-  const [productLoading, setProductLoading] = useState(false);
   const [image, setImage] = useState("");
 
   const [product, setProduct] = useState(initialProduct);
   const [category, setCategory] = useState(initialCategory);
 
   // func
-  const handleModal = () => {
+  const handleModal = (isEdit) => {
+    dispatch(setModalOpen(isEdit));
     setOpen(true);
   };
 
@@ -65,6 +70,7 @@ export default function Product() {
   const uploadImage = async () => {
     if (!image) return Promise.resolve();
 
+    // Upload the image to Firebase Storage
     const imageRef = ref(storage, `product/${product.name + v4()}`);
     return await uploadBytes(imageRef, image).then(() => {
       return getDownloadURL(imageRef); // Return the download URL after upload completes
@@ -94,8 +100,8 @@ export default function Product() {
   // Create new product
   const handleProductSubmit = async (e) => {
     e.preventDefault();
-    setProductLoading(true);
 
+    dispatch(addProductStart());
     try {
       const downloadURL = await uploadImage(); // Get the imageUrl before uploading product data
 
@@ -115,11 +121,14 @@ export default function Product() {
       }
 
       setProduct(initialProduct);
+
       setImage("");
-      setProductLoading(false);
+
+      dispatch(addProductSuccess());
+
       setOpen(false);
     } catch (error) {
-      setProductLoading(false);
+      dispatch(addProductFailure());
       console.error("Error submitting product:", error);
     }
   };
@@ -149,27 +158,24 @@ export default function Product() {
         <div className="flex-shrink-0 flex ">
           <button
             type="button"
-            onClick={handleModal}
+            onClick={() => handleModal(false)}
             className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500"
           >
             Add Products
           </button>
         </div>
       </div>
-      <Category />
+      <Category handleModal={handleModal} />
       <ProductModal
         open={open}
         setOpen={setOpen}
-        handleAdd={handleAddProduct}
-        handleSubmit={handleProductSubmit}
+        image={image}
         handleImage={handleImage}
+        removeImage={removeImage}
+        handleAdd={handleAddProduct}
         product={product}
         setProduct={setProduct}
-        isLoading={productLoading}
-        image={image}
-        removeImage={removeImage}
-        category={category}
-        setCategory={setCategory}
+        handleSubmit={handleProductSubmit}
         handleAddCategory={handleAddCategory}
       />
     </div>

@@ -11,7 +11,7 @@ import {
   getProductSuccess,
 } from "../../redux/product/productSlice";
 
-function Category() {
+function Category({ handleModal }) {
   // state and variables
   const dispatch = useDispatch();
   const { categories, selectedCategory, products } = useSelector(
@@ -42,7 +42,7 @@ function Category() {
     <div>
       <SectionHeading title="Category" />
       <SquareList list={categories} />
-      <ProductCard products={products} />
+      <ProductCard products={products} handleModal={handleModal} />
     </div>
   );
 }

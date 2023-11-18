@@ -6,10 +6,9 @@ import { XCircleIcon } from "@heroicons/react/24/solid";
 import { ButtonLoader } from "../loader";
 import { useSelector } from "react-redux";
 
-export default function ProductModal({
+export default function AddProductModal({
   open,
   setOpen,
-  isLoading,
   image,
   handleImage,
   removeImage,
@@ -17,11 +16,9 @@ export default function ProductModal({
   product,
   setProduct,
   handleSubmit,
-  category,
-  setCategory,
   handleAddCategory,
 }) {
-  const { categories } = useSelector((state) => state.product);
+  const { categories, loading } = useSelector((state) => state.product);
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
@@ -127,7 +124,7 @@ export default function ProductModal({
 
                 <div className="mb-6">
                   <label
-                    for="product-input"
+                    htmlFor="product-input"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
                     Product Name
@@ -180,7 +177,6 @@ export default function ProductModal({
                       onChange={handleAdd}
                       value={product.description}
                       className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md p-2"
-                      defaultValue={""}
                     />
                   </div>
                 </div>
@@ -210,7 +206,7 @@ export default function ProductModal({
                     onClick={handleSubmit}
                     className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500"
                   >
-                    {isLoading ? <ButtonLoader /> : null}
+                    {loading ? <ButtonLoader /> : null}
                     Add Product
                   </button>
                 </div>

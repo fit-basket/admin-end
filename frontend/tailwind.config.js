@@ -3,9 +3,9 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {},
-    ringWidth: {
-      2: "2px",
-    },
+    // ringWidth: {
+    //   2: "2px",
+    // },
     colors: {
       primary: "#F9B81D",
       secondary: {
