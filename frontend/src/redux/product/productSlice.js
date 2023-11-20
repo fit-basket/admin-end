@@ -3,9 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   categories: [],
   selectedCategory: "",
+  // selectedProduct: "",
   products: [],
   isEdit: false,
   loading: false,
+  deleteLoading: false,
   error: false,
 };
 
@@ -59,9 +61,35 @@ export const productSlice = createSlice({
       state.error = true;
     },
 
+    // Handle Update product
+    updateProductStart: (state) => {
+      state.loading = true;
+    },
+    updateProductSuccess: (state, action) => {
+      state.loading = false;
+      state.error = false;
+    },
+    updateProductFailure: (state) => {
+      state.loading = false;
+      state.error = true;
+    },
+
+    // Handle Delete product
+    deleteProductStart: (state) => {
+      state.deleteLoading = true;
+    },
+    deleteProductSuccess: (state, action) => {
+      state.deleteLoading = false;
+      state.error = false;
+    },
+    deleteProductFailure: (state) => {
+      state.deleteLoading = false;
+      state.error = true;
+    },
+
     // Handle Modal
     setModalOpen: (state, action) => {
-      state.isEdit = action.payload.data;
+      state.isEdit = action.payload;
     },
     // setModalClose: (state) => {
     //   state.modalOpen = true;
@@ -81,6 +109,12 @@ export const {
   addProductStart,
   addProductSuccess,
   addProductFailure,
+  updateProductStart,
+  updateProductSuccess,
+  updateProductFailure,
+  deleteProductStart,
+  deleteProductSuccess,
+  deleteProductFailure,
   setModalOpen,
   // setModalClose,
 } = productSlice.actions;

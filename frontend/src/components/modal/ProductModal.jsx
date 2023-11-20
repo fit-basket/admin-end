@@ -1,14 +1,17 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 
 import DropDownInput from "../combobox";
-import { XCircleIcon } from "@heroicons/react/24/solid";
+import { XCircleIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { ButtonLoader } from "../loader";
 import { useSelector } from "react-redux";
+import { truncateText } from "../../utils/helper";
+import { ErrorNotification } from "../notification";
 
 export default function AddProductModal({
   open,
   setOpen,
+  handleModalClose,
   image,
   handleImage,
   removeImage,
@@ -17,8 +20,14 @@ export default function AddProductModal({
   setProduct,
   handleSubmit,
   handleAddCategory,
+  handleUpdateProduct,
+  handleProductDelete,
+  errors,
 }) {
-  const { categories, loading } = useSelector((state) => state.product);
+  const { categories, deleteLoading, loading, isEdit } = useSelector(
+    (state) => state.product
+  );
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
@@ -56,8 +65,20 @@ export default function AddProductModal({
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
             <div className="relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full sm:p-6">
-              <h3 className="mb-3 font-bold">New Product</h3>
+              <div className="flex justify-between align-center mb-3 ">
+                <h3 className="font-bold">
+                  {isEdit ? "Update" : "New"} Product
+                </h3>
+                <button onClick={handleModalClose}>
+                  <XMarkIcon className="w-5 h-5" />
+                </button>
+              </div>
               <div className="sm:grid sm:grid-cols-2 gap-2">
+                <div className="col-span-2">
+                  {errors ? (
+                    <ErrorNotification message="Mandatory fields cannot be blank" />
+                  ) : null}
+                </div>
                 <div className="mb-6 col-span-2">
                   <label
                     htmlFor="cover-photo"
@@ -109,7 +130,7 @@ export default function AddProductModal({
                         ) : (
                           <div className="flex justify-between align-center gap-2">
                             <p className="text-xs text-gray-500 m-0">
-                              {image.name}
+                              {truncateText(image.name, 50)}
                             </p>
                             <XCircleIcon
                               className="w-5 h-5 text-red-400"
@@ -125,7 +146,7 @@ export default function AddProductModal({
                 <div className="mb-6">
                   <label
                     htmlFor="product-input"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white asterisks"
                   >
                     Product Name
                   </label>
@@ -142,7 +163,7 @@ export default function AddProductModal({
                   <div>
                     <label
                       htmlFor="price"
-                      className="mb-2 block text-sm font-medium text-gray-700"
+                      className="mb-2 block text-sm font-medium text-gray-700 asterisks"
                     >
                       Price
                     </label>
@@ -187,27 +208,27 @@ export default function AddProductModal({
                     data={categories}
                     product={product}
                     setProduct={setProduct}
-                    // category={category}
-                    // setCategory={setCategory}
                     handleAddCategory={handleAddCategory}
                   />
-                  {/* <DropDownInput
-                  label="subCategory"
-                  text="Sub-Category"
-                  data={categories}
-                  product={product}
-                  setProduct={setProduct}
-                  handleAddCategory={handleAddCategory}
-                /> */}
                 </div>
                 <div className="text-end col-span-2">
+                  {isEdit && (
+                    <button
+                      type="button"
+                      onClick={() => handleProductDelete(product._id)}
+                      className="inline-flex items-center px-4 py-2 border hover:border-red-500 rounded-md shadow-sm text-sm font-medium text-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-red-500 mr-2"
+                    >
+                      {deleteLoading ? <ButtonLoader /> : null}
+                      Delete Product
+                    </button>
+                  )}
                   <button
                     type="button"
-                    onClick={handleSubmit}
+                    onClick={isEdit ? handleUpdateProduct : handleSubmit}
                     className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500"
                   >
                     {loading ? <ButtonLoader /> : null}
-                    Add Product
+                    {isEdit ? "Update" : "Add"} Product
                   </button>
                 </div>
               </div>

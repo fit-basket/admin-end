@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
 // import { Combobox } from "@headlessui/react";
 // import { CheckIcon } from "@heroicons/react/24/solid";
@@ -6,15 +6,22 @@ import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
 
 import "./style.css";
+import { useSelector } from "react-redux";
 
 export default function DropDownInput({
-  product,
   label,
   text,
   data,
+  product,
   setProduct,
   handleAddCategory,
 }) {
+  // state and variables
+
+  const { selectedCategory, categories } = useSelector(
+    (state) => state.product
+  );
+
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState([]);
@@ -47,11 +54,19 @@ export default function DropDownInput({
     handleAddCategory(query);
   };
 
+  useEffect(() => {
+    let category = categories?.find(
+      (category) => category?._id === selectedCategory
+    );
+
+    setQuery(category?.title || "");
+  }, [categories, selectedCategory]);
+
   return (
     <div>
       <label
         htmlFor={text}
-        className="mb-2 block text-sm font-medium text-gray-700"
+        className="mb-2 block text-sm font-medium text-gray-700 asterisks"
       >
         {text}
       </label>

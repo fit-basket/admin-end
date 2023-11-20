@@ -27,7 +27,7 @@ function Category({ handleModal }) {
       dispatch(getProductStart());
       axios
         .get(
-          `/product?businessId=${currentUser._id}&categoryId=${selectedCategory}`
+          `/products/all-products/${currentUser._id}?categoryId=${selectedCategory}`
         )
         .then((res) => {
           dispatch(getProductSuccess(res.data.data));

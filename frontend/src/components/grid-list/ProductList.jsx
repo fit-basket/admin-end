@@ -20,7 +20,7 @@ function ProductCard({ products, handleModal }) {
               />
               <div className="flex-1 px-4 py-2 text-sm text-start truncate">
                 <div className="text-gray-900 font-medium hover:text-gray-600">
-                  {name}
+                  {truncateText(name, 15)}
                 </div>
                 <p className="text-gray-500 text-start">₹{price} </p>
                 <div className="flex items-center">
@@ -39,7 +39,7 @@ function ProductCard({ products, handleModal }) {
               <div className="flex-shrink-0">
                 <button
                   type="button"
-                  onClick={() => handleModal(true)}
+                  onClick={() => handleModal(true, _id)}
                   className="w-8 h-8 bg-white inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 "
                 >
                   <span className="sr-only">Open options</span>
