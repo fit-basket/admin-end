@@ -29,7 +29,6 @@ import { ProductModal } from "../../components/modal";
 export default function Product() {
   // variables and states
   const { currentUser } = useSelector((state) => state.user);
-  const { selectedProduct } = useSelector((state) => state.product);
   const dispatch = useDispatch();
 
   const initialProduct = {
