@@ -48,3 +48,10 @@ code {
   -ms-overflow-style: auto;  /* IE and Edge */
   scrollbar-width: thin;  /* Firefox */
 }
+
+.asterisks::after {
+  content: "*"; 
+  color: #f87171;
+  font-weight: bold; 
+  margin-left: 5px;
+}
