@@ -17,6 +17,7 @@ export default function User() {
     address: "",
     businessName: "Dummy Name",
     businessType: "Dummy Type",
+    image: "",
   });
 
   const handleUserData = (e) => {

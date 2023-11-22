@@ -68,7 +68,7 @@ export default function Product() {
     setErrors(false);
     if (productId) {
       axios
-        .get(`/products/single-product/${productId}`)
+        .get(`/products/single/${productId}`)
         .then((res) => {
           const product = res.data.data;
           setProduct((prevProduct) => ({
@@ -91,9 +91,7 @@ export default function Product() {
   const getProductbyCategory = () => {
     dispatch(getProductStart());
     axios
-      .get(
-        `/products/all-products/${currentUser._id}?categoryId=${selectedCategory}`
-      )
+      .get(`/products/all/${currentUser._id}?categoryId=${selectedCategory}`)
       .then((res) => {
         dispatch(getProductSuccess(res.data.data));
       })
@@ -106,7 +104,7 @@ export default function Product() {
   const getAllProduct = () => {
     dispatch(getProductStart());
     axios
-      .get(`/products/all-products/${currentUser._id}`)
+      .get(`/products/all/${currentUser._id}`)
       .then((res) => {
         dispatch(getProductSuccess(res.data.data));
       })
