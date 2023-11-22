@@ -7,7 +7,6 @@ import { v4 } from "uuid";
 
 import { PageHeading } from "../../components/headings";
 import Category from "./Category";
-// import ProductModal from "../../components/modal";
 import axios from "../../utils/axiosConfig";
 import {
   addProductFailure,
@@ -19,22 +18,29 @@ import {
   getCategoriesFailure,
   getCategoriesStart,
   getCategoriesSuccess,
+  getProductFailure,
+  getProductStart,
+  getProductSuccess,
   setModalOpen,
   updateProductFailure,
   updateProductStart,
   updateProductSuccess,
 } from "../../redux/product/productSlice";
 import { ProductModal } from "../../components/modal";
+import { handleValidation } from "../../utils/helper";
 
 export default function Product() {
   // variables and states
-  const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+
+  const { currentUser } = useSelector((state) => state.user);
+  const { selectedCategory } = useSelector((state) => state.product);
+
+  const fieldsToValidate = ["name", "category", "price"];
 
   const initialProduct = {
     name: "",
     description: "",
-    // image: "",
     price: "",
     businessId: currentUser._id,
     category: "",
@@ -44,7 +50,6 @@ export default function Product() {
 
   const initialCategory = {
     title: "",
-    // image: "",
     businessId: currentUser._id,
   };
 
@@ -54,19 +59,17 @@ export default function Product() {
 
   const [product, setProduct] = useState(initialProduct);
   const [errors, setErrors] = useState(false);
-  // const [productId, setProductId] = useState("");
-  // const [category, setCategory] = useState(initialCategory);
 
   // func
 
+  // <<########################### Product CRUD operations end############################>>
+  // Get Single Product
   const handleGetProduct = (productId) => {
-    // setProductId(productId);
     setErrors(false);
     if (productId) {
       axios
         .get(`/products/single-product/${productId}`)
         .then((res) => {
-          // console.log("PRODUCT", res.data.data);
           const product = res.data.data;
           setProduct((prevProduct) => ({
             ...prevProduct,
@@ -84,84 +87,37 @@ export default function Product() {
     }
   };
 
-  const handleModalOpen = (isEdit, productId = "") => {
-    dispatch(setModalOpen(isEdit));
-    setOpen(true);
-    handleGetProduct(productId);
-  };
-
-  const handleModalClose = () => {
-    setOpen(false);
-    setErrors(false);
-    setProduct(initialProduct);
-    setImage("");
-  };
-
-  const handleAddProduct = (e) => {
-    setProduct({ ...product, [e.target.name]: e.target.value });
-    setErrors(false);
-  };
-
-  const handleImage = (e) => {
-    setImage(e.target.files[0]);
-    setIsImageChange(true);
-  };
-
-  const removeImage = () => {
-    setImage("");
-  };
-
-  // Handle Product fields validation
-  const handleValidation = () => {
-    if (
-      product.name.trim() === "" ||
-      product.category.trim() === "" ||
-      product.price.trim() === ""
-    ) {
-      setErrors(true);
-      return false;
-    } else {
-      return true;
-    }
-  };
-
-  // Handle Image upload to firebase
-  const uploadImage = async () => {
-    if (!image) return Promise.resolve();
-    if (isImageChanged) {
-      const imageRef = ref(storage, `product/${product.name + v4()}`);
-      return await uploadBytes(imageRef, image).then(() => {
-        return getDownloadURL(imageRef); // Return the download URL after upload completes
-      });
-    } else {
-      return undefined;
-    }
-    // Upload the image to Firebase Storage
-  };
-
-  // Add new category
-  const handleAddCategory = (title) => {
+  // Get Product based on category
+  const getProductbyCategory = () => {
+    dispatch(getProductStart());
     axios
-      .post("/add-category", { ...initialCategory, title })
+      .get(
+        `/products/all-products/${currentUser._id}?categoryId=${selectedCategory}`
+      )
       .then((res) => {
-        if (res.data.success) {
-          const id = res.data.data._id;
-          setProduct((prevProduct) => ({
-            ...prevProduct,
-            category: id,
-          }));
-        } else {
-          console.log("ERROR");
-        }
+        dispatch(getProductSuccess(res.data.data));
       })
-      .catch((error) => {
-        console.log("ERROR", error);
+      .catch((err) => {
+        dispatch(getProductFailure(err));
       });
   };
 
-  // Handle Edit product
+  // Get All Products
+  const getAllProduct = () => {
+    dispatch(getProductStart());
+    axios
+      .get(`/products/all-products/${currentUser._id}`)
+      .then((res) => {
+        dispatch(getProductSuccess(res.data.data));
+      })
+      .catch((err) => {
+        dispatch(getProductFailure(err));
+      });
+  };
+
+  // Edit product
   const handleUpdateProduct = async () => {
-    if (handleValidation()) {
+    if (handleValidation(fieldsToValidate, product)) {
       setErrors(false);
 
       dispatch(updateProductStart());
@@ -197,16 +153,19 @@ export default function Product() {
         dispatch(updateProductSuccess());
 
         setOpen(false);
+        getProductbyCategory();
       } catch (error) {
         dispatch(updateProductFailure());
         console.error("Error submitting product:", error);
       }
+    } else {
+      setErrors(true);
     }
   };
 
-  // Create new product
+  // Create Product
   const handleProductSubmit = async (e) => {
-    if (handleValidation()) {
+    if (handleValidation(fieldsToValidate, product)) {
       e.preventDefault();
       setErrors(false);
 
@@ -236,13 +195,17 @@ export default function Product() {
         dispatch(addProductSuccess());
 
         setOpen(false);
+        getProductbyCategory();
       } catch (error) {
         dispatch(addProductFailure());
         console.error("Error submitting product:", error);
       }
+    } else {
+      setErrors(true);
     }
   };
 
+  // Delete Product
   const handleProductDelete = async (productId) => {
     dispatch(deleteProductStart());
     try {
@@ -257,10 +220,82 @@ export default function Product() {
       dispatch(deleteProductSuccess());
 
       setOpen(false);
+      getProductbyCategory();
     } catch (error) {
       dispatch(deleteProductFailure());
       console.error("Error submitting product:", error);
     }
+  };
+  // <<############################ Product CRUD operations end############################>>
+
+  // Handle Product Input field change
+  const handleProductInputChange = (e) => {
+    setProduct({ ...product, [e.target.name]: e.target.value });
+    setErrors(false);
+  };
+
+  // <<############################ Modal related functions ############################>>
+
+  const handleModalOpen = (isEdit, productId = "") => {
+    dispatch(setModalOpen(isEdit));
+    setOpen(true);
+    handleGetProduct(productId);
+  };
+
+  const handleModalClose = () => {
+    setOpen(false);
+    setErrors(false);
+    setProduct(initialProduct);
+    setImage("");
+  };
+
+  // <<############################ Modal related functions end ############################>>
+
+  // <<############################  Image related functions ############################>>
+
+  const handleImage = (e) => {
+    setImage(e.target.files[0]);
+    setIsImageChange(true);
+  };
+
+  const removeImage = () => {
+    setImage("");
+  };
+
+  const uploadImage = async () => {
+    // Handle Image upload to firebase storage
+    if (!image) return Promise.resolve();
+    if (isImageChanged) {
+      const imageRef = ref(storage, `product/${product.name + v4()}`);
+      return await uploadBytes(imageRef, image).then(() => {
+        return getDownloadURL(imageRef); // Return the download URL after upload completes
+      });
+    } else {
+      return undefined;
+    }
+  };
+
+  // <<############################  Image related functions end ############################>>
+
+  //<<############################  Category related functions end ############################>>
+
+  const handleAddCategory = (title) => {
+    axios
+      .post("/add-category", { ...initialCategory, title })
+      .then((res) => {
+        if (res.data.success) {
+          const id = res.data.data._id;
+          setProduct((prevProduct) => ({
+            ...prevProduct,
+            category: id,
+          }));
+        } else {
+          console.log("ERROR");
+        }
+      })
+      .catch((error) => {
+        console.log("ERROR", error);
+      });
   };
 
   // async
@@ -284,7 +319,6 @@ export default function Product() {
         <div className="flex-1 min-w-0">
           <PageHeading title="Products" />
         </div>
-        {/* <BreadCrumb title="Products" crumbs={crumbs} /> */}
         <div className="flex-shrink-0 flex ">
           <button
             type="button"
@@ -295,7 +329,11 @@ export default function Product() {
           </button>
         </div>
       </div>
-      <Category handleModal={handleModalOpen} />
+      <Category
+        handleModal={handleModalOpen}
+        getProductbyCategory={getProductbyCategory}
+        getAllProduct={getAllProduct}
+      />
       <ProductModal
         open={open}
         setOpen={setOpen}
@@ -303,7 +341,7 @@ export default function Product() {
         image={image}
         handleImage={handleImage}
         removeImage={removeImage}
-        handleAdd={handleAddProduct}
+        handleAdd={handleProductInputChange}
         product={product}
         setProduct={setProduct}
         handleSubmit={handleProductSubmit}

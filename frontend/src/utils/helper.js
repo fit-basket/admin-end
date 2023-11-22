@@ -10,3 +10,12 @@ export function truncateText(text, maxLength) {
     return text.substring(0, maxLength).trim() + "...";
   }
 }
+
+export const handleValidation = (fields, obj) => {
+  for (const field of fields) {
+    if (obj[field].trim() === "") {
+      return false;
+    }
+  }
+  return true;
+};
