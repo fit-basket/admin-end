@@ -34,7 +34,9 @@ export default function Product() {
   const dispatch = useDispatch();
 
   const { currentUser } = useSelector((state) => state.user);
-  const { selectedCategory } = useSelector((state) => state.product);
+  const { categories, selectedCategory } = useSelector(
+    (state) => state.product
+  );
 
   const fieldsToValidate = ["name", "category", "price"];
 
@@ -327,11 +329,13 @@ export default function Product() {
           </button>
         </div>
       </div>
-      <Category
-        handleModal={handleModalOpen}
-        getProductbyCategory={getProductbyCategory}
-        getAllProduct={getAllProduct}
-      />
+      {categories?.length ? (
+        <Category
+          handleModal={handleModalOpen}
+          getProductbyCategory={getProductbyCategory}
+          getAllProduct={getAllProduct}
+        />
+      ) : null}
       <ProductModal
         open={open}
         setOpen={setOpen}

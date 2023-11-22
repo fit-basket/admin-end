@@ -20,7 +20,7 @@ function Category({ handleModal, getProductbyCategory, getAllProduct }) {
     } else {
       getAllProduct();
     }
-  }, [selectedCategory, currentUser, getProductbyCategory, getAllProduct]);
+  }, [selectedCategory, currentUser]);
 
   return (
     <div>

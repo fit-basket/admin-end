@@ -1,9 +1,12 @@
-let baseUrl;
+let serverBaseUrl = "https://the-purple-mango.onrender.com/api";
+let clientBaseUrl = "http://localhost:3000";
 
 if (process.env.REACT_APP_ENVIRONMENT === "dev") {
-  baseUrl = "http://localhost:3001/api";
+  serverBaseUrl = "http://localhost:3001/api";
+  clientBaseUrl = "http://localhost:3000";
 } else if (process.env.REACT_APP_ENVIRONMENT === "prod") {
-  baseUrl = "https://the-purple-mango.onrender.com/api";
+  serverBaseUrl = "https://the-purple-mango.onrender.com/api";
+  clientBaseUrl = "https://thepurplemango.netlify.app";
 }
 
-export default baseUrl;
+export { serverBaseUrl, clientBaseUrl };
