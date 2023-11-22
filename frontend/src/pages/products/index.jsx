@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { storage } from "../../firebase";
@@ -90,7 +90,7 @@ export default function Product() {
   };
 
   // Get Product based on category
-  const getProductbyCategory = () => {
+  const getProductbyCategory = useCallback(() => {
     dispatch(getProductStart());
     axios
       .get(`/products/all/${currentUser._id}?categoryId=${selectedCategory}`)
@@ -100,10 +100,10 @@ export default function Product() {
       .catch((err) => {
         dispatch(getProductFailure(err));
       });
-  };
+  }, [currentUser._id, dispatch, selectedCategory]);
 
   // Get All Products
-  const getAllProduct = () => {
+  const getAllProduct = useCallback(() => {
     dispatch(getProductStart());
     axios
       .get(`/products/all/${currentUser._id}`)
@@ -113,7 +113,7 @@ export default function Product() {
       .catch((err) => {
         dispatch(getProductFailure(err));
       });
-  };
+  }, [currentUser._id, dispatch]);
 
   // Edit product
   const handleUpdateProduct = async () => {
@@ -312,6 +312,15 @@ export default function Product() {
         });
     }
   }, [dispatch, currentUser]);
+
+  // Get all products initially and then get products based on change in selected category
+  useEffect(() => {
+    if (selectedCategory) {
+      getProductbyCategory();
+    } else {
+      getAllProduct();
+    }
+  }, [selectedCategory, currentUser, getProductbyCategory, getAllProduct]);
 
   return (
     <div>
