@@ -13,10 +13,11 @@ export default function User() {
     name: "",
     email: "",
     password: "",
-    phone: "12",
+    phone: "",
     address: "",
-    businessName: "Dummy Name",
+    businessName: "",
     businessType: "Dummy Type",
+    image: "",
   });
 
   const handleUserData = (e) => {
@@ -106,7 +107,46 @@ export default function User() {
                   />
                 </div>
               </div>
-
+              <div>
+                <label
+                  htmlFor="phone"
+                  className="block text-start text-sm font-medium text-gray-700"
+                >
+                  Phone number
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="phone"
+                    autoComplete="phone"
+                    value={user.phone}
+                    onChange={handleUserData}
+                    required
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  />
+                </div>
+              </div>
+              <div>
+                <label
+                  htmlFor="businessName"
+                  className="block text-start text-sm font-medium text-gray-700"
+                >
+                  Business Name
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="businessName"
+                    name="businessName"
+                    type="businessName"
+                    autoComplete="current-businessName"
+                    value={user.businessName}
+                    onChange={handleUserData}
+                    required
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  />
+                </div>
+              </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <input

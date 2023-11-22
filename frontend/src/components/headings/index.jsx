@@ -10,7 +10,7 @@ function SectionHeading({ title }) {
 
 function PageHeading({ title }) {
   return (
-    <h2 className="text-base font-bold leading-7 text-gray-400 text-start sm:text-base sm:truncate">
+    <h2 className="text-base font-bold leading-7 text-gray-500 text-start sm:text-base sm:truncate">
       {title}
     </h2>
   );

@@ -13,6 +13,7 @@ import "./App.css";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { signInSuccess } from "./redux/user/userSlice";
+import Business from "./pages/business";
 
 function App() {
   const dispatch = useDispatch();
@@ -34,6 +35,10 @@ function App() {
             element={<PrivateRoute element={Products} />}
           />
           <Route path="reviews" element={<PrivateRoute element={Reviews} />} />
+          <Route
+            path="business"
+            element={<PrivateRoute element={Business} />}
+          />
         </Route>
         <Route path="*" element={<Error />} />
         <Route
