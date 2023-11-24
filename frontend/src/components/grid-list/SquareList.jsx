@@ -26,7 +26,7 @@ function SquareList({ list }) {
                 src={image}
                 alt={title}
                 className={classNames(
-                  selectedCategory === _id && "ring-4 ring-indigo-700",
+                  selectedCategory === _id && "ring-4 ring-indigo-600",
                   "flex-none w-24 h-24 bg-gray-100 rounded-md object-center object-cover"
                 )}
                 // className=""

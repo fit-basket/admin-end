@@ -23,3 +23,9 @@ export const userNavigation = [
   { name: "Your Profile", to: "/" },
   { name: "Settings", to: "/" },
 ];
+
+export const settingTabs = [
+  { name: "My Account", id: "account", href: "#", current: true },
+  // { name: "Preference", id: "account", href: "#", current: false },
+  { name: "Billing", id: "billing", href: "#", current: false },
+];

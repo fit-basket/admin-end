@@ -145,7 +145,7 @@ export default function AddProductModal({
 
                 <div className="mb-6">
                   <label
-                    htmlFor="product-input"
+                    htmlFor="name"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white asterisks"
                   >
                     Product Name
