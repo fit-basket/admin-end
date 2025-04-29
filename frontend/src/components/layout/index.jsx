@@ -4,17 +4,19 @@ import axios from "../../utils/axiosConfig";
 
 import { sidebarNavigation } from "../../constants/navigation";
 import logo from "../../assets/logo/logo.png";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "../../redux/user/userSlice";
 import { ConfirmationModal } from "../modal";
 import { modalText } from "../../constants/modalText";
 import SideBar from "./SideBar";
 import Navbar from "./Navbar";
+import { ErrorNotification, SuccessNotification } from "../notification";
 
 export default function Layout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const { successMessage, errorMessage } = useSelector((state) => state.user);
 
   const { logOutText } = modalText;
 
@@ -70,6 +72,10 @@ export default function Layout() {
             handleOpen={handleOpen}
           />
           <main className="flex-1 bg-gray-50">
+            {successMessage ? (
+              <SuccessNotification message={successMessage} />
+            ) : null}
+            {errorMessage ? <ErrorNotification message={errorMessage} /> : null}
             <div className="py-6">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                 <Outlet />

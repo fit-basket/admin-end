@@ -2,8 +2,8 @@
 import axios from "axios";
 import { serverBaseUrl } from "./base";
 
-const instance = axios.create({
+const axiosConfig = axios.create({
   baseURL: serverBaseUrl,
 });
 
-export default instance;
+export default axiosConfig;

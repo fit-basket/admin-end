@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 // import { CheckIcon } from "@heroicons/react/24/solid";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import { useSelector } from "react-redux";
 
 import "./style.css";
-import { useSelector } from "react-redux";
 
 export default function DropDownInput({
   label,

@@ -19,7 +19,7 @@ function App() {
   const dispatch = useDispatch();
   useEffect(() => {
     let token = localStorage.getItem("authToken");
-    let data = JSON.parse(localStorage.getItem("user"));
+    let data = JSON.parse(localStorage.getItem("admin"));
     if (token) {
       dispatch(signInSuccess({ data, token }));
     }
